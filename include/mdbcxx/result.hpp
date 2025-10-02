@@ -1,0 +1,25 @@
+#include "row.hpp"
+#include "result_metadata.hpp"
+
+class Result {
+public:
+
+  Result(const Result&);
+  Result(Result&&);
+  Result (MYSQL_RES* res);
+
+  Row& operator[] (std::size_t index);
+  std::vector<Row>::iterator begin ();
+  std::vector<Row>::const_iterator cbegin ();
+  std::vector<Row>::reverse_iterator rbegin();
+  std::vector<Row>::const_reverse_iterator crbegin();
+  std::vector<Row>::iterator end ();
+  std::vector<Row>::const_iterator cend ();
+  std::vector<Row>::reverse_iterator rend ();
+  std::vector<Row>::const_reverse_iterator crend ();
+
+  ResultMetadata& get_metadata();
+private:
+  std::vector<Row> result_set {};
+  ResultMetadata rmetadata {};
+};

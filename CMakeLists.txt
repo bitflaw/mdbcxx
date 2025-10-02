@@ -1,0 +1,68 @@
+cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
+project(mdbcxx
+  #VERSION 0.0.0
+  LANGUAGES CXX
+)
+
+#-------------------------SET GLOBAL CONSTANTS----------------------------#
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_CXX_FLAGS_DEBUG "-std=c++17 -Wall -Wextra -Wpedantic -g")
+set (CMAKE_CXX_FLAGS_RELEASE "-std=c++17 -O3")
+
+#-------------------------CONFIG HEADERS ----------------------------#
+
+target_include_directories(mdbcxx_shared
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx>
+  $<INSTALL_INTERFACE:include>
+)
+
+#target_include_directories(mdbcxx_static
+#  PUBLIC
+#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx>
+#  $<INSTALL_INTERFACE:include>
+#)
+
+#configure_file(
+#  ${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx/version.hpp.in
+#  ${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx/version.hpp
+#  @ONLY
+#)
+
+#-------------------------SET AND BUILD SOURCES AND LIBS----------------------------#
+
+set(SOURCES
+  src/field.cpp
+  src/field_metadata.cpp
+  src/result.cpp
+  src/result_metadata.cpp
+  src/row.cpp
+)
+
+add_library(mdbcxx_shared SHARED ${SOURCES})
+set_target_properties(mdbcxx_shared PROPERTIES OUTPUT_NAME "mdbcxx")
+
+#add_library(mdbcxx_static STATIC ${SOURCES})
+#set_target_properties(mdbcxx_static PROPERTIES OUTPUT_NAME "mdbcxx")
+
+#-------------------------INSTALL TARGETS----------------------------#
+
+install(TARGETS mdbcxx_shared mdbcxx_static
+  EXPORT mdbcxx-targets
+  ARCHIVE DESTINATION lib/mdbcxx
+  LIBRARY DESTINATION lib/mdbcxx
+)
+
+#Install top-level headers
+install(DIRECTORY include/mdbcxx
+  DESTINATION include/mdbcxx
+  FILES_MATCHING PATTERN "*.hpp"
+)
+
+#Install config
+install(EXPORT mdbcxx-targets
+  FILE mdbcxx-config.cmake
+  DESTINATION lib/cmake/mdbcxx
+)

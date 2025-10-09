@@ -6,10 +6,11 @@ project(mdbcxx
 
 #-------------------------SET GLOBAL CONSTANTS----------------------------#
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set (CMAKE_CXX_FLAGS_DEBUG "-std=c++17 -Wall -Wextra -Wpedantic -g")
-set (CMAKE_CXX_FLAGS_RELEASE "-std=c++17 -O3")
+set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_CXX_FLAGS_DEBUG "-g")
+set (CMAKE_CXX_FLAGS_RELEASE "-O3")
+add_compile_options(-Wall -Wextra -Wpedantic)
 
 #-------------------------SET AND BUILD SOURCES AND LIBS----------------------------#
 
@@ -19,6 +20,7 @@ set(SOURCES
   src/result.cpp
   src/result_metadata.cpp
   src/row.cpp
+  src/connection.cpp
 )
 
 add_library(mdbcxx_shared SHARED ${SOURCES})

@@ -1,5 +1,6 @@
 #include "../include/mdbcxx/result_metadata.hpp"
 #include <cstddef>
+#include <mysql/mysql.h>
 #include <utility>
 
 ResultMetadata::ResultMetadata (const ResultMetadata& rmeta):
@@ -18,10 +19,8 @@ ResultMetadata::ResultMetadata (MYSQL_RES* res):
   num_cols(mysql_num_fields(res))
 {
   MYSQL_FIELD* fields = mysql_fetch_fields(res);
-  std::size_t nfields = sizeof(*fields);
-  columns.reserve(nfields);
-  for (std::size_t i = 0; i < nfields; i++) columns.emplace_back(fields[i]);
-  mysql_free_result(res);
+  columns.reserve(num_cols);
+  for (std::size_t i = 0; i < num_cols; i++) columns.emplace_back(fields[i]);
 }
 
 void ResultMetadata::operator() (ResultMetadata& rmeta)

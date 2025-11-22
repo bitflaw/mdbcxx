@@ -21,6 +21,8 @@ set(SOURCES
   src/result_metadata.cpp
   src/row.cpp
   src/connection.cpp
+  src/transaction.cpp
+  src/params.cpp
 )
 
 add_library(mdbcxx_shared SHARED ${SOURCES})

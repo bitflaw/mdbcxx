@@ -7,9 +7,9 @@ using extra_opt_type = std::variant<bool, u_char, uint, ulong, const char*>;
 inline std::unordered_map<mysql_option, extra_opt_type> extra_properties
   {
     {MYSQL_SECURE_AUTH, false},
-    {MYSQL_OPT_RECONNECT, true},
+    {MYSQL_OPT_RECONNECT, false},
     {MYSQL_OPT_SSL_ENFORCE, false},
-    {MYSQL_REPORT_DATA_TRUNCATION, true},
+    {MYSQL_REPORT_DATA_TRUNCATION, false},
     {MARIADB_OPT_SKIP_READ_RESPONSE, false},
     {MYSQL_OPT_SSL_VERIFY_SERVER_CERT, false},
     {MYSQL_OPT_LOCAL_INFILE, (uint) 0},
@@ -20,7 +20,7 @@ inline std::unordered_map<mysql_option, extra_opt_type> extra_properties
     {MYSQL_OPT_ZSTD_COMPRESSION_LEVEL, (u_char)'9'},
     {MYSQL_OPT_NET_BUFFER_LENGTH, (ulong) 16777216},
     {MYSQL_OPT_MAX_ALLOWED_PACKET, (ulong) 1073741824},
-    {MYSQL_OPT_PROTOCOL, (uint) MYSQL_PROTOCOL_DEFAULT},
+    {MYSQL_OPT_PROTOCOL, (uint) MYSQL_PROTOCOL_TCP},
     {MYSQL_OPT_SSL_KEY, ""},
     {MYSQL_OPT_SSL_CERT, ""},
     {MYSQL_OPT_SSL_CA, ""},

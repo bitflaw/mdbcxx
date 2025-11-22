@@ -3,17 +3,17 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include "prepped.hpp"
 
 struct Properties{
   std::string host {"127.0.0.1"};
   std::string user {};
   std::string passwd {};
   std::string db_name {};
-  std::string sock {NULL};
+  std::string sock {};
   ulong flags {0};
   uint16_t port {3306};
 };
-
 
 class Connection
 {
@@ -21,13 +21,13 @@ public:
   Connection () = default;
   Connection (Properties&);
   Connection (std::string user, std::string passwd, std::string db);
-  Connection (const Connection&);
-  Connection (Connection&&);
+  Connection (const Connection&) = delete;
+  Connection (Connection&&) = delete;
 
-  Connection& operator= (Connection&);
-  Connection& operator= (Connection&&);
-  Connection& operator() (Connection&);
-  Connection& operator() (Connection&&);
+  Connection& operator= (const Connection&) = delete;
+  Connection& operator= (Connection&&) = delete;
+  // Connection& operator() (const Connection&) = delete;
+  // Connection& operator() (Connection&&) = delete;
 
   bool default_db (std::string db_name);
   bool reset ();
@@ -42,6 +42,10 @@ public:
   bool abort ();
   bool kill ();
 
+  void prepare(std::string, std::string);
+  prepped_stmt& prepped (std::string name);
+  MYSQL* raw ();
+
   ~Connection ();
 
 private:
@@ -52,4 +56,5 @@ private:
     REFRESH_HOSTS | REFRESH_STATUS | REFRESH_LOG |
     REFRESH_SLAVE | REFRESH_MASTER
   };
+  std::unordered_map<std::string, prepped_stmt> prepped_statements {};
 };

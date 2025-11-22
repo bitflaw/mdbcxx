@@ -1,5 +1,6 @@
 #include "../include/mdbcxx/connection.hpp"
 #include <cstring>
+#include <memory>
 #include <mysql/mysql.h>
 #include <stdexcept>
 #include <iostream>
@@ -20,12 +21,12 @@ Connection::Connection (Properties& cparams):
   set_extra_props();
   MYSQL* ret_handle = mysql_real_connect(
     db_handle,
-    conn_params.host.data(),
-    conn_params.user.data(),
-    conn_params.passwd.data(),
-    conn_params.db_name.data(),
+    conn_params.host.c_str(),
+    conn_params.user.c_str(),
+    conn_params.passwd.c_str(),
+    conn_params.db_name.c_str(),
     conn_params.port,
-    (conn_params.sock.data() != NULL ? conn_params.sock.data() : NULL),
+    (conn_params.sock.empty() ? NULL : conn_params.sock.c_str()),
     conn_params.flags
   );
 
@@ -58,12 +59,12 @@ Connection::Connection (std::string user, std::string passwd, std::string db)
   set_extra_props();
   MYSQL* ret_handle = mysql_real_connect(
     db_handle,
-    conn_params.host.data(),
-    conn_params.user.data(),
-    conn_params.passwd.data(),
-    conn_params.db_name.data(),
+    conn_params.host.c_str(),
+    conn_params.user.c_str(),
+    conn_params.passwd.c_str(),
+    conn_params.db_name.c_str(),
     conn_params.port,
-    (conn_params.sock.data() != NULL ? conn_params.sock.data() : NULL),
+    (conn_params.sock.empty()? NULL: conn_params.sock.c_str()),
     conn_params.flags
   );
   if (ret_handle == NULL)
@@ -77,55 +78,28 @@ Connection::Connection (std::string user, std::string passwd, std::string db)
   }
 }
 
-Connection::Connection (const Connection& conn):
-  db_handle(conn.db_handle),
-  conn_params(conn.conn_params)
-{ mysql_close(conn.db_handle); }
-
-Connection::Connection (Connection&& conn):
-  db_handle(conn.db_handle),
-  conn_params(std::move(conn.conn_params))
-{ mysql_close(conn.db_handle); }
-
 Connection::~Connection ()
 {
   conn_params = {};
-  mysql_close(db_handle);
+  if (db_handle) mysql_close(db_handle);
 }
 
-Connection& Connection::operator= (Connection& conn)
-{
-  db_handle = conn.db_handle;
-  conn_params = conn.conn_params;
-  return *this;
-}
-
-Connection& Connection::operator= (Connection&& conn)
-{
-  if (this != &conn)
-  {
-    db_handle = conn.db_handle;
-    conn_params = std::move(conn.conn_params);
-  }
-  return *this;
-}
-
-Connection& Connection::operator() (Connection& conn)
-{
-  db_handle = conn.db_handle;
-  conn_params = conn.conn_params;
-  return *this;
-}
-
-Connection& Connection::operator() (Connection&& conn)
-{
-  if (this != &conn)
-  {
-    db_handle = conn.db_handle;
-    conn_params = std::move(conn.conn_params);
-  }
-  return *this;
-}
+// Connection& Connection::operator() (Connection& conn)
+// {
+//   db_handle = conn.db_handle;
+//   conn_params = conn.conn_params;
+//   return *this;
+// }
+//
+// Connection& Connection::operator() (Connection&& conn)
+// {
+//   if (this != &conn)
+//   {
+//     db_handle = conn.db_handle;
+//     conn_params = std::move(conn.conn_params);
+//   }
+//   return *this;
+// }
 
 bool Connection::default_db (std::string db_name)
 {
@@ -140,9 +114,10 @@ bool Connection::reset ()
     return false;
   }
 
-  if (mysql_reset_connection(db_handle) != 0)
+  int retval = mysql_reset_connection(db_handle);
+  if (retval)
   {
-    std::cerr<< "[ERROR: in 'Connection::reset()'] Failed to reset connection!"<<std::endl;
+    std::cerr<< "[ERROR: in 'Connection::reset()'] "<<mysql_error(db_handle)<<"\n"<<std::endl;
     return false;
   }else {
     std::cout<< "[INFO] Connection reset! "<<std::endl;
@@ -180,7 +155,9 @@ void Connection::set_prop(std::pair<mysql_option, extra_opt_type> prop)
   if (it == extra_properties.end())
   {
     std::cerr << "[ERROR: in 'Connection::set_prop()'] Trying to change undefined property! "
-              << "Skipping property!";
+      << "Skipping property!"
+      << std::endl;
+    ;
   }
   it->second = prop.second;
 }
@@ -193,7 +170,8 @@ void Connection::set_props(std::vector<std::pair<mysql_option, extra_opt_type>> 
     if (it == extra_properties.end())
     {
       std::cerr << "[ERROR: in 'Connection::set_props()'] Trying to change undefined property! "
-                << "Skipping property!";
+        << "Skipping property!"
+        <<std::endl;
     }
     it->second = prop.second;
   }
@@ -207,12 +185,12 @@ void Connection::connect (Properties conn_props)
   set_extra_props();
   MYSQL* ret_handle = mysql_real_connect(
     db_handle,
-    conn_params.host.data(),
-    conn_params.user.data(),
-    conn_params.passwd.data(),
-    conn_params.db_name.data(),
+    conn_params.host.c_str(),
+    conn_params.user.c_str(),
+    conn_params.passwd.c_str(),
+    conn_params.db_name.c_str(),
     conn_params.port,
-    (conn_params.sock.data() != NULL ? conn_params.sock.data() : NULL),
+    (conn_params.sock.empty() ? NULL : conn_params.sock.c_str()),
     conn_params.flags
   );
   if (ret_handle == NULL)
@@ -240,7 +218,11 @@ bool Connection::ping ()
     std::cerr<<"[ERROR: in Connection::ping()'] Connection handle is NULL"<<std::endl;
     return false;
   }
-  if (mysql_ping(db_handle) != 0) return false;
+  if (mysql_ping(db_handle))
+  {
+    std::cerr<<"[ERROR: in Connection::ping()'] "<<mysql_error(db_handle)<<std::endl;
+    return false;
+  }
   return true;
 }
 
@@ -275,7 +257,11 @@ bool Connection::abort ()
       <<std::endl;
     return false;
   }
-  if (mariadb_cancel(db_handle) != 0) return false;
+  if (mariadb_cancel(db_handle))
+  {
+    std::cerr<<"[ERROR: in 'Connection::abort()'] "<<mysql_error(db_handle)<<std::endl;
+    return false;
+  }
   return true;
 }
 
@@ -287,6 +273,54 @@ bool Connection::kill ()
       <<std::endl;
     return false;
   }
-  if (mysql_kill(db_handle, mysql_thread_id(db_handle)) != 0) return false;
+  if (mysql_kill(db_handle, mysql_thread_id(db_handle)))
+  {
+    std::cerr<<"[ERROR: in 'Connection::kill()'] "<<mysql_error(db_handle)<<std::endl;
+    return false;
+  }
   return true;
 }
+
+void Connection::prepare(std::string stmt_name, std::string prepped_sql)
+{
+  if (db_handle == NULL)
+  {
+    std::cerr<<"[ERROR: in 'Connection::prepare()'] Connection handle is NULL"
+      <<std::endl;
+    return;
+  }
+  prepped_stmt prepped {
+    .stmt = std::shared_ptr<MYSQL_STMT>{mysql_stmt_init(db_handle)}
+  };
+  if (prepped.stmt == NULL)
+  {
+    throw std::runtime_error(
+      std::format(
+        "[ERROR: in Connection::prepare()] {}!",
+        mysql_stmt_error(prepped.stmt.get())
+      )
+    );
+  }
+
+  if (mysql_stmt_prepare(prepped.stmt.get(), prepped_sql.c_str(), prepped_sql.size()))
+  {
+    throw std::runtime_error(
+      std::format(
+        "[ERROR: in Connection::prepare()] {}!",
+        mysql_stmt_error(prepped.stmt.get())
+      )
+    );
+  }
+  prepped.param_count = mysql_stmt_param_count(prepped.stmt.get());
+  prepped_statements.insert({stmt_name,prepped});
+}
+
+prepped_stmt& Connection::prepped(std::string name)
+{
+  if (!prepped_statements.contains(name)) {
+    throw std::invalid_argument("The name provided for the prepared statement doesn't exist!");
+  }
+  return prepped_statements.at(name);
+}
+
+MYSQL* Connection::raw () { return db_handle; }

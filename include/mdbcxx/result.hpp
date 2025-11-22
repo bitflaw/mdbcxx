@@ -1,11 +1,13 @@
 #include "row.hpp"
 #include "result_metadata.hpp"
+#include <iterator>
 
 class Result {
 public:
 
-  Result(const Result&);
-  Result(Result&&);
+  Result () = default;
+  Result (const Result&);
+  Result (Result&&);
   Result (MYSQL_RES* res);
 
   Row& operator[] (std::size_t index);
@@ -17,6 +19,8 @@ public:
   std::vector<Row>::const_iterator cend ();
   std::vector<Row>::reverse_iterator rend ();
   std::vector<Row>::const_reverse_iterator crend ();
+  std::size_t size() const;
+  void append(Row);
 
   ResultMetadata& get_metadata();
 private:

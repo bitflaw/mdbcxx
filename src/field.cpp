@@ -1,5 +1,5 @@
 #include "../include/mdbcxx/field.hpp"
-#include <mysql/mariadb_com.h>
+#include <string>
 
 Field::Field(const Field& field):
 value(field.value), metadata(field.metadata)
@@ -38,7 +38,7 @@ void Field::operator() (Field&& field)
   metadata = std::move(field.metadata);
 }
 
-Field::Field(MYSQL_FIELD* field, char* raw)
+Field::Field(MYSQL_FIELD* field, char* raw, ulong len)
 {
   metadata = FieldMetadata {field};
   switch (field->type)
@@ -50,23 +50,48 @@ Field::Field(MYSQL_FIELD* field, char* raw)
     case MYSQL_TYPE_BLOB:
     case MYSQL_TYPE_MEDIUM_BLOB:
     case MYSQL_TYPE_LONG_BLOB:
-      value = std::vector<uint8_t>{reinterpret_cast<uint8_t*>(raw),
-                                   reinterpret_cast<uint8_t*>(raw) + field->length
-                                   };
+      value = std::vector<std::byte>{
+        reinterpret_cast<std::byte*>(raw),
+        reinterpret_cast<std::byte*>(raw) + len
+      };
       break;
     default:
-      if (raw) { value = std::string {raw, field->length}; }
-      else { value = std::monostate{}; }
+      if (raw) { value = std::string {raw, len}; }
+      else { value = std::string{}; }
       break;
   }
 }
 
 template <typename T>
-T& Field::as () { return static_cast<T>(value); }
+T Field::as () const { return static_cast<T>(value); }
+
+template <>
+short Field::as<short> () const { return std::stoi(std::get<std::string>(value)); }
+
+template <>
+int Field::as<int> () const { return std::stoi(std::get<std::string>(value)); }
+
+template <>
+float Field::as<float> () const { return std::stof(std::get<std::string>(value)); }
+
+template <>
+double Field::as<double> () const { return std::stod(std::get<std::string>(value)); }
+
+template <>
+long Field::as<long> () const { return std::stol(std::get<std::string>(value)); }
+
+template <>
+unsigned long Field::as<unsigned long> () const { return std::stoul(std::get<std::string>(value)); }
+
+template <>
+long long Field::as<long long> () const { return std::stoll(std::get<std::string>(value)); }
+
+template <>
+unsigned long long Field::as<unsigned long long> () const { return std::stoull(std::get<std::string>(value)); }
+
+template <>
+bool Field::as<bool> () const { return (!std::get<std::string>(value).empty() ? true:false); }
 
 bool Field::is_null () { return std::holds_alternative<std::monostate>(value); }
-bool Field::is_string () { return std::holds_alternative<std::string>(value); }
-bool Field::is_blob () { return std::holds_alternative<std::vector<uint8_t>>(value); }
-
 const std::string& Field::as_string () { return std::get<std::string>(value); }
-const std::vector<uint8_t>& Field::as_blob () {return std::get<std::vector<uint8_t>>(value); }
+const std::vector<std::byte>& Field::as_blob () {return std::get<std::vector<std::byte>>(value); }

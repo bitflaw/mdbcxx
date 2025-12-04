@@ -26,10 +26,7 @@ public:
 
   Connection& operator= (const Connection&) = delete;
   Connection& operator= (Connection&&) = delete;
-  // Connection& operator() (const Connection&) = delete;
-  // Connection& operator() (Connection&&) = delete;
 
-  bool default_db (std::string db_name);
   bool reset ();
   void set_extra_props();
   void set_prop(std::pair<mysql_option, extra_opt_type>);
@@ -40,7 +37,7 @@ public:
   bool reconnect ();
   bool svr_reload (uint32_t = 0);
   bool abort ();
-  bool kill ();
+  void close();
 
   void prepare(std::string, std::string);
   prepped_stmt& prepped (std::string name);

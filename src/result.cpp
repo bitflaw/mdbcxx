@@ -1,6 +1,5 @@
 #include "../include/mdbcxx/result.hpp"
 #include <cstddef>
-#include <iostream>
 #include <stdexcept>
 
 Result::Result(const Result& result):
@@ -19,14 +18,16 @@ Result::Result (MYSQL_RES* res)
   ResultMetadata rmeta {res};
   rmetadata = std::move(rmeta);
   std::size_t res_size {mysql_num_rows(res)};
-  std::cout<<"Number of rows(raw): "<<mysql_num_rows(res)
-    <<"\nNumber of rows(size_t): "<<res_size<<std::endl;
   result_set.reserve(res_size);
+  std::size_t ncol {mysql_num_fields(res)};
+  MYSQL_FIELD* farray = mysql_fetch_fields(res);
   MYSQL_ROW row;
-  for (std::size_t i = 0; i < res_size; i++) {
+  for (std::size_t i = 0; i < res_size; i++)
+  {
     row = mysql_fetch_row(res);
     if (!row) break;
-    result_set.emplace_back(res,row);
+    ulong* lengths = mysql_fetch_lengths(res);
+    result_set.emplace_back(farray, ncol, row, lengths);
   }
   mysql_free_result(res);
 }
@@ -50,5 +51,7 @@ std::vector<Row>::reverse_iterator Result::rend () { return result_set.rend(); }
 std::vector<Row>::const_reverse_iterator Result::crend () { return result_set.crend(); }
 
 std::size_t Result::size () const { return result_set.size(); }
+bool Result::empty () const { return result_set.empty(); }
 
 void Result::append (Row row) { result_set.push_back(row); }
+

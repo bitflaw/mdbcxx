@@ -6,8 +6,8 @@ class Row {
 public:
   Row(const Row&);
   Row(Row&&);
-  Row (MYSQL_RES*, MYSQL_ROW);
-  Row (std::vector<MYSQL_BIND>&);
+  Row (MYSQL_FIELD* farray,std::size_t nfarray, MYSQL_ROW row, unsigned long* lengths);
+  Row (MYSQL_FIELD* fields, std::vector<MYSQL_BIND>& bound_row);
 
   Field& operator[] (std::size_t);
   std::optional<Field> operator[] (std::string);

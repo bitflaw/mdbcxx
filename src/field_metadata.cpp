@@ -15,11 +15,13 @@ FieldMetadata::FieldMetadata(FieldMetadata&& fmeta):
 {}
 
 FieldMetadata::FieldMetadata (MYSQL_FIELD* fmeta):
-  name(fmeta->name), default_value(fmeta->def),
   length(fmeta->length), max_length(fmeta->max_length),
   flags(fmeta->flags), decimals(fmeta->decimals),
   sql_type(fmeta->type)
-{}
+{
+  name = fmeta->name ? std::string {fmeta->name, fmeta->name_length} : std::string {};
+  default_value = fmeta->def ? std::string {fmeta->def , fmeta->def_length} : std::string {};
+}
 
 void FieldMetadata::operator() (FieldMetadata& fmeta)
 {

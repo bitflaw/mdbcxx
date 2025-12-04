@@ -1,4 +1,3 @@
-#include <cstddef>
 #include <cstdint>
 #include <mysql/mysql.h>
 #include <string>
@@ -19,8 +18,6 @@ public:
 
   ResultMetadata& operator= (ResultMetadata&);
   ResultMetadata& operator= (ResultMetadata&&);
-  void operator() (ResultMetadata&);
-  void operator() (ResultMetadata&&);
 
   ~ResultMetadata() = default;
 };

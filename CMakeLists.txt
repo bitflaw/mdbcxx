@@ -12,6 +12,26 @@ set (CMAKE_CXX_FLAGS_DEBUG "-g")
 set (CMAKE_CXX_FLAGS_RELEASE "-O3")
 add_compile_options(-Wall -Wextra -Wpedantic)
 
+#-------------------------SET OPTIONS------------------------------------#
+option(BUILD_TESTS "Build Tests" OFF)
+
+#-------------------------SET AND BUILD TESTS----------------------------#
+
+if(BUILD_TESTS)
+  find_package(Catch2 REQUIRED)
+
+  set(TEST_SRCS
+    tests/connection.cpp
+    tests/params.cpp
+    tests/transaction.cpp
+  )
+
+  add_executable(tests ${TEST_SRCS})
+  target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx)
+  target_link_libraries(tests PRIVATE Catch2::Catch2WithMain mdbcxx_shared mariadb)
+
+endif()
+
 #-------------------------SET AND BUILD SOURCES AND LIBS----------------------------#
 
 set(SOURCES

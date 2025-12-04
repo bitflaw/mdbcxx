@@ -20,6 +20,7 @@ public:
   std::vector<Row>::reverse_iterator rend ();
   std::vector<Row>::const_reverse_iterator crend ();
   std::size_t size() const;
+  bool empty () const;
   void append(Row);
 
   ResultMetadata& get_metadata();

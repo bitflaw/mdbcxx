@@ -17,10 +17,8 @@ public:
   FieldMetadata (FieldMetadata&&);
   FieldMetadata (MYSQL_FIELD* fmeta);
 
-  FieldMetadata& operator= (FieldMetadata&);
+  FieldMetadata& operator= (const FieldMetadata&);
   FieldMetadata& operator= (FieldMetadata&&);
-  void operator() (FieldMetadata&);
-  void operator() (FieldMetadata&&);
 
   ~FieldMetadata ()= default;
 };

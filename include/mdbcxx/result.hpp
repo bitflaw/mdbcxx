@@ -1,6 +1,5 @@
 #include "row.hpp"
 #include "result_metadata.hpp"
-#include <iterator>
 
 class Result {
 public:
@@ -19,11 +18,14 @@ public:
   std::vector<Row>::const_iterator cend ();
   std::vector<Row>::reverse_iterator rend ();
   std::vector<Row>::const_reverse_iterator crend ();
+
   std::size_t size() const;
   bool empty () const;
-  void append(Row);
+  void append(Row&&);
 
   ResultMetadata& get_metadata();
+
+  ~Result() = default;
 private:
   std::vector<Row> result_set {};
   ResultMetadata rmetadata {};

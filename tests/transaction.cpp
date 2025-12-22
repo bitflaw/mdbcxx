@@ -35,6 +35,11 @@ TEST_CASE("TRANSACTION TESTS")
     REQUIRE(row[0].as_string() == "alice");
     REQUIRE(row[1].as<int>() == 32);
 
+    using tuple_t = std::tuple<std::string, int>;
+    tuple_t tup = row.as_tuple<tuple_t>();
+    REQUIRE(std::get<0>(tup) == "alice");
+    REQUIRE(std::get<1>(tup) == 32);
+
     REQUIRE_THROWS_AS(txn.exec0(sql), std::length_error);
 
     std::optional<Result> res2 = txn.execn(1, sql);

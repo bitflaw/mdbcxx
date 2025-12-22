@@ -12,7 +12,9 @@ ResultMetadata::ResultMetadata (ResultMetadata&& rmeta):
   num_cols(std::move(rmeta.num_cols)), columns(std::move(rmeta.columns))
 {}
 
-//INFO: CTOR for results gotten from prepared statements.
+//NOTE: CTOR for result set and metadata gotten from prepared statements.
+//WARN:-> This doesn't seem plausible at all, given we usually don't
+// have a result set in the prepped stmts api.
 
 ResultMetadata::ResultMetadata (MYSQL_RES* res):
   db_name(mysql_fetch_field_direct(res, 1)->db),

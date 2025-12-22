@@ -23,32 +23,7 @@ FieldMetadata::FieldMetadata (MYSQL_FIELD* fmeta):
   default_value = fmeta->def ? std::string {fmeta->def , fmeta->def_length} : std::string {};
 }
 
-void FieldMetadata::operator() (FieldMetadata& fmeta)
-{
-  name = fmeta.name;
-  default_value = fmeta.default_value;
-  length = fmeta.length;
-  max_length = fmeta.max_length;
-  flags = fmeta.flags;
-  decimals = fmeta.decimals;
-  sql_type = fmeta.sql_type;
-}
-
-void FieldMetadata::operator() (FieldMetadata&& fmeta)
-{
-  if (this != &fmeta)
-  {
-    name = std::move(fmeta.name);
-    default_value = std::move(fmeta.default_value);
-    length = std::move(fmeta.length);
-    max_length = std::move(fmeta.max_length);
-    flags = std::move(fmeta.flags);
-    decimals = std::move(fmeta.decimals);
-    sql_type = std::move(fmeta.sql_type);
-  }
-}
-
-FieldMetadata& FieldMetadata::operator= (FieldMetadata& fmeta)
+FieldMetadata& FieldMetadata::operator= (const FieldMetadata& fmeta)
 {
   name = fmeta.name;
   default_value = fmeta.default_value;

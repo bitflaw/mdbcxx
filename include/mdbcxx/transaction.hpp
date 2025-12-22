@@ -2,6 +2,7 @@
 #include "result.hpp"
 #include "params.hpp"
 #include <cstddef>
+#include <optional>
 
 class Transaction
 {

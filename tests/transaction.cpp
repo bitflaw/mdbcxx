@@ -5,10 +5,11 @@
 TEST_CASE("TRANSACTION TESTS")
 {
 
-  std::string db = getenv("TDB_NAME");
-  std::string user = getenv("TDB_USR");
-  std::string pass = getenv("TDB_PASS");
-  std::string port = getenv("TDB_PORT");
+  const char* empty_str = "";
+  std::string db = (getenv("TDB_NAME") ? getenv("TDB_NAME") : empty_str);
+  std::string user = (getenv("TDB_USR") ? getenv("TDB_USR") : empty_str);
+  std::string pass= (getenv("TDB_PASS") ? getenv("TDB_PASS") : empty_str);
+  std::string port = (getenv("TDB_PORT") ? getenv("TDB_PORT") : empty_str);
 
   Properties props {};
   props.user = user;

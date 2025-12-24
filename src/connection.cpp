@@ -6,6 +6,8 @@
 #include <type_traits>
 #include <format>
 
+namespace mcxx 
+{
 Connection::Connection (Properties& cparams):
   conn_params(cparams)
 {
@@ -267,3 +269,5 @@ prepped_stmt& Connection::prepped(std::string name)
 }
 
 MYSQL* Connection::raw () { return db_handle; }
+
+};

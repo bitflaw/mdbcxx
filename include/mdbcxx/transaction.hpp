@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <optional>
 
+namespace mcxx {
 class Transaction
 {
   Connection& cxn;
@@ -31,3 +32,5 @@ public:
 
   ~Transaction() = default;
 };
+
+};//namespace mcxx

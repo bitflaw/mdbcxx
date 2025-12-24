@@ -2,6 +2,8 @@
 #include <cstddef>
 #include <stdexcept>
 
+namespace mcxx
+{
 Result::Result(const Result& result):
   result_set(result.result_set),
   rmetadata(result.rmetadata)
@@ -55,3 +57,4 @@ bool Result::empty () const { return result_set.empty(); }
 
 void Result::append (Row&& row) { result_set.push_back(row); }
 
+};//namespace mcxx

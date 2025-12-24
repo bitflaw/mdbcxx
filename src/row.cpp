@@ -2,6 +2,8 @@
 #include <cstddef>
 #include <cstring>
 
+namespace mcxx
+{
 Row::Row(const Row& row):
 fields(row.fields), col_names(row.col_names)
 {}
@@ -81,3 +83,4 @@ Field& Row::operator[] (std::string column_name)
 }
 
 std::size_t Row::size() const { return fields.size(); }
+};//namespace mcxx

@@ -5,6 +5,7 @@
 #include <cstdint>
 #include "prepped.hpp"
 
+namespace mcxx {
 struct Properties{
   std::string host {"127.0.0.1"};
   std::string user {};
@@ -55,3 +56,5 @@ private:
   };
   std::unordered_map<std::string, prepped_stmt> prepped_statements {};
 };
+
+};//namespace mcxx

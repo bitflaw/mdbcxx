@@ -2,6 +2,8 @@
 #include <cstddef>
 #include <utility>
 
+namespace mcxx
+{
 ResultMetadata::ResultMetadata (const ResultMetadata& rmeta):
   db_name(rmeta.db_name), num_rows(rmeta.num_rows),
   num_cols(rmeta.num_cols), columns(rmeta.columns)
@@ -46,3 +48,4 @@ ResultMetadata& ResultMetadata::operator= (ResultMetadata&& rmeta)
   }
   return *this;
 }
+};//namespace mcxx

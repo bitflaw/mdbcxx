@@ -4,6 +4,8 @@
 #include <cstddef>
 
 
+namespace mcxx
+{
 Field::Field(const Field& field):
 value(field.value), metadata(field.metadata)
 {}
@@ -122,3 +124,5 @@ template <> chrono_timestamp Field::as<chrono_timestamp> () const
 
 bool Field::is_null () { return std::holds_alternative<std::monostate>(value); }
 const std::string& Field::as_string () { return std::get<std::string>(value); }
+
+};//namespace mcxx

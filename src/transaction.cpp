@@ -4,6 +4,8 @@
 #include <format>
 #include <stdexcept>
 
+namespace mcxx
+{
 Transaction::Transaction (Connection& c): cxn(c) {}
 Transaction::Transaction (const Transaction& t): cxn(t.cxn) {}
 
@@ -361,3 +363,5 @@ void Transaction::toggle_autocommit(bool mode)
 {
   if (mysql_autocommit(cxn.raw(), mode? 1:0)) throw std::runtime_error(mysql_error(cxn.raw()));
 }
+
+};//namespace mcxx

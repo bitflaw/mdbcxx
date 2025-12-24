@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+namespace mcxx
+{
 class ResultMetadata
 {
 public:
@@ -20,4 +22,5 @@ public:
   ResultMetadata& operator= (ResultMetadata&&);
 
   ~ResultMetadata() = default;
+};
 };

@@ -1,6 +1,7 @@
 #include "row.hpp"
 #include "result_metadata.hpp"
 
+namespace mcxx {
 class Result {
 public:
 
@@ -29,4 +30,6 @@ public:
 private:
   std::vector<Row> result_set {};
   ResultMetadata rmetadata {};
+};
+
 };

@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string>
 
+namespace mcxx {
 class FieldMetadata {
 public:
   std::string name {};
@@ -22,3 +23,5 @@ public:
 
   ~FieldMetadata ()= default;
 };
+
+};//namespace mcxx

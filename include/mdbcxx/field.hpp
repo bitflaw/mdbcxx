@@ -4,6 +4,7 @@
 
 using field_value_t = std::variant<std::monostate, std::string>;
 
+namespace mcxx {
 class Field {
 
 public:
@@ -25,3 +26,5 @@ private:
   field_value_t value {std::monostate {}};
   FieldMetadata metadata {};
 };
+
+};//namespace mcxx

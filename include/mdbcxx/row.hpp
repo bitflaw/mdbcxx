@@ -4,6 +4,8 @@
 #include <utility>
 #include <vector>
 
+namespace mcxx
+{
 class Row {
 public:
   Row(const Row&);
@@ -61,3 +63,5 @@ TUPLE_T Row::as_tuple()
   auto t_sequence = std::make_index_sequence<t_size> {};
   return build_tuple<TUPLE_T>(t_sequence);
 }
+
+};//namespace mcxx

@@ -9,16 +9,16 @@ TEST_CASE("CONNECTION TESTS")
   std::string pass = getenv("TDB_PASS");
   std::string port = getenv("TDB_PORT");
 
-  Properties props {};
+  mcxx::Properties props {};
   props.user = user;
   props.passwd = pass;
   props.db_name = db;
   props.port = (short) std::stoi(port);
 
-  REQUIRE_NOTHROW(Connection {props});
-  REQUIRE_THROWS(Connection {user, pass, db});
+  REQUIRE_NOTHROW(mcxx::Connection {props});
+  REQUIRE_THROWS(mcxx::Connection {user, pass, db});
 
-  Connection cxn {};
+  mcxx::Connection cxn {};
   REQUIRE_NOTHROW(cxn.connect(props));
   REQUIRE_FALSE(cxn.raw() == NULL);
 

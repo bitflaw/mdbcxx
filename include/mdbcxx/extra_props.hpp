@@ -4,6 +4,7 @@
 
 using extra_opt_type = std::variant<bool, u_char, uint, ulong, const char*>;
 
+namespace mcxx {
 inline std::unordered_map<mysql_option, extra_opt_type> extra_properties
   {
     {MYSQL_SECURE_AUTH, false},
@@ -46,3 +47,4 @@ inline std::unordered_map<mysql_option, extra_opt_type> extra_properties
     {MYSQL_OPT_CONNECT_ATTR_RESET, ""},
     {MARIADB_OPT_PROXY_HEADER, ""}
   };
+};//namespace mcxx

@@ -1,7 +1,8 @@
 #include "../include/mdbcxx/params.hpp"
 #include <stdexcept>
 
-
+namespace mcxx
+{
 void params::append(std::nullptr_t val) { param_vec.emplace_back(val); }
 void params::append(bool val) { param_vec.emplace_back(val); }
 void params::append(uint8_t val) { param_vec.emplace_back(val); }
@@ -92,3 +93,4 @@ MYSQL_BIND set_param(param_T& p)
   },p);
   return param;
 }
+};//namespace mcxx

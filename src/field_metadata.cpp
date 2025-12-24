@@ -1,5 +1,7 @@
 #include "../include/mdbcxx/field_metadata.hpp"
 
+namespace mcxx
+{
 FieldMetadata::FieldMetadata(const FieldMetadata& fmeta):
   name(fmeta.name), default_value(fmeta.default_value),
   length(fmeta.length), max_length(fmeta.max_length),
@@ -49,3 +51,4 @@ FieldMetadata& FieldMetadata::operator= (FieldMetadata&& fmeta)
   }
   return *this;
 }
+};//namespace mcxx

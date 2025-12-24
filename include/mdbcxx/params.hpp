@@ -9,6 +9,7 @@
 #include <mysql/mysql.h>
 #include <concepts>
 
+namespace mcxx {
 enum sql_string_types
 {
   CHAR = MYSQL_TYPE_VARCHAR,
@@ -89,3 +90,5 @@ public:
 };
 
 MYSQL_BIND set_param(param_T& p);
+
+};

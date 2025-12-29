@@ -4,6 +4,11 @@ project(mdbcxx
   LANGUAGES CXX
 )
 
+#-------------------------PkgConfig----------------------------#
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(MARIADB REQUIRED IMPORTED_TARGET mariadb)
+
 #-------------------------SET GLOBAL CONSTANTS----------------------------#
 
 set (CMAKE_CXX_STANDARD 20)
@@ -50,6 +55,9 @@ set_target_properties(mdbcxx_shared PROPERTIES OUTPUT_NAME "mdbcxx")
 
 add_library(mdbcxx_static STATIC ${SOURCES})
 set_target_properties(mdbcxx_static PROPERTIES OUTPUT_NAME "mdbcxx")
+
+target_link_libraries(mdbcxx_shared PUBLIC PkgConfig::MARIADB)
+target_link_libraries(mdbcxx_static PUBLIC PkgConfig::MARIADB)
 
 #-------------------------CONFIG HEADERS ----------------------------#
 

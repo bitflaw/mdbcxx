@@ -1,3 +1,4 @@
+#pragma once
 #include "connection.hpp"
 #include "result.hpp"
 #include "params.hpp"

@@ -26,6 +26,14 @@ void params::append(std::vector<param_T>& val)
 {
   for (param_T & v: val) param_vec.emplace_back(v);
 }
+std::vector<param_T>::iterator params::begin ()                { return param_vec.begin(); }
+std::vector<param_T>::const_iterator params::cbegin ()         { return param_vec.cbegin(); }
+std::vector<param_T>::reverse_iterator params::rbegin ()       { return param_vec.rbegin(); }
+std::vector<param_T>::const_reverse_iterator params::crbegin() { return param_vec.crbegin(); }
+std::vector<param_T>::iterator params::end ()                  { return param_vec.end(); }
+std::vector<param_T>::const_iterator params::cend ()           { return param_vec.cend(); }
+std::vector<param_T>::reverse_iterator params::rend ()         { return param_vec.rend(); }
+std::vector<param_T>::const_reverse_iterator params::crend ()  { return param_vec.crend(); }
 
 std::size_t params::size() const { return param_vec.size(); }
 

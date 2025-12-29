@@ -8,6 +8,26 @@
 
 namespace mcxx 
 {
+
+Connection::Connection (Connection&& cxn)
+{
+  db_handle = cxn.db_handle;
+  cxn.db_handle = NULL;
+  refresh_options = std::move(cxn.refresh_options);
+  prepped_statements = std::move(cxn.prepped_statements);
+  conn_params = std::move(cxn.conn_params);
+}
+
+Connection& Connection::operator= (Connection&& cxn)
+{
+  db_handle = cxn.db_handle;
+  cxn.db_handle = NULL;
+  refresh_options = std::move(cxn.refresh_options);
+  prepped_statements = std::move(cxn.prepped_statements);
+  conn_params = std::move(cxn.conn_params);
+  return *this;
+}
+
 Connection::Connection (Properties& cparams):
   conn_params(cparams)
 {

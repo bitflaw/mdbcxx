@@ -83,6 +83,15 @@ public:
   requires (sizeof...(Args) > 0)
   void append_multi(Args&&... args) { (append(args), ...); }
 
+  std::vector<param_T>::iterator begin ();
+  std::vector<param_T>::const_iterator cbegin ();
+  std::vector<param_T>::reverse_iterator rbegin ();
+  std::vector<param_T>::const_reverse_iterator crbegin();
+  std::vector<param_T>::iterator end ();
+  std::vector<param_T>::const_iterator cend ();
+  std::vector<param_T>::reverse_iterator rend ();
+  std::vector<param_T>::const_reverse_iterator crend ();
+
   std::size_t size() const;
   void reserve(std::size_t n);
   void clear();

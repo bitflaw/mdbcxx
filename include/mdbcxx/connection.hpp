@@ -1,3 +1,4 @@
+#pragma once
 #include "extra_props.hpp"
 #include <mysql/mysql.h>
 #include <string>
@@ -23,10 +24,10 @@ public:
   Connection (Properties&);
   Connection (std::string user, std::string passwd, std::string db);
   Connection (const Connection&) = delete;
-  Connection (Connection&&) = delete;
+  Connection (Connection&&);
 
   Connection& operator= (const Connection&) = delete;
-  Connection& operator= (Connection&&) = delete;
+  Connection& operator= (Connection&&);
 
   bool reset ();
   void set_extra_props();

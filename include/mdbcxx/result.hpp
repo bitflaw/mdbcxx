@@ -1,3 +1,4 @@
+#pragma once
 #include "row.hpp"
 #include "result_metadata.hpp"
 

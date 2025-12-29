@@ -1,3 +1,4 @@
+#pragma once
 #include <mysql/mysql.h>
 #include <variant>
 #include "field_metadata.hpp"

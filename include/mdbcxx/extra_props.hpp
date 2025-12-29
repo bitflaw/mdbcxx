@@ -1,3 +1,4 @@
+#pragma once
 #include <mysql/mysql.h>
 #include <unordered_map>
 #include <variant>

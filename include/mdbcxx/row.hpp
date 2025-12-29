@@ -1,3 +1,4 @@
+#pragma once
 #include "field.hpp"
 #include <optional>
 #include <stdexcept>

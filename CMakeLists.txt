@@ -7,7 +7,7 @@ project(mdbcxx
 #-------------------------PkgConfig----------------------------#
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(MARIADB REQUIRED IMPORTED_TARGET mariadb)
+pkg_check_modules(MARIADB REQUIRED IMPORTED_TARGET libmariadb)
 
 #-------------------------SET GLOBAL CONSTANTS----------------------------#
 
@@ -15,6 +15,7 @@ set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_FLAGS_DEBUG "-g")
 set (CMAKE_CXX_FLAGS_RELEASE "-O3")
+set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_compile_options(-Wall -Wextra -Wpedantic)
 
 #-------------------------SET OPTIONS------------------------------------#
@@ -23,7 +24,7 @@ option(BUILD_TESTS "Build Tests" OFF)
 #-------------------------SET AND BUILD TESTS----------------------------#
 
 if(BUILD_TESTS)
-  find_package(Catch2 REQUIRED)
+  find_package(Catch2 3 REQUIRED)
 
   set(TEST_SRCS
     tests/connection.cpp
@@ -33,7 +34,7 @@ if(BUILD_TESTS)
 
   add_executable(tests ${TEST_SRCS})
   target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx)
-  target_link_libraries(tests PRIVATE Catch2::Catch2WithMain mdbcxx_shared mariadb)
+  target_link_libraries(tests PRIVATE Catch2::Catch2WithMain mdbcxx_shared PkgConfig::MARIADB)
 
 endif()
 

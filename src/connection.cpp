@@ -159,6 +159,7 @@ void Connection::set_prop(std::pair<mysql_option, extra_opt_type> prop)
     std::cerr << "[ERROR: in 'Connection::set_prop()'] Trying to change undefined property! "
       << "Skipping property!"
       << std::endl;
+    return;
   }
   it->second = prop.second;
 }
@@ -173,6 +174,7 @@ void Connection::set_props(std::vector<std::pair<mysql_option, extra_opt_type>> 
       std::cerr << "[ERROR: in 'Connection::set_props()'] Trying to change undefined property! "
         << "Skipping property!"
         <<std::endl;
+      continue;
     }
     it->second = prop.second;
   }

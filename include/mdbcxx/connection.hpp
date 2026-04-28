@@ -1,6 +1,6 @@
 #pragma once
 #include "extra_props.hpp"
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include <string>
 #include <vector>
 #include <cstdint>

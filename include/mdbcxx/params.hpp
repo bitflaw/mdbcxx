@@ -6,7 +6,7 @@
 #include <vector>
 #include <variant>
 #include <cstdint>
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include <concepts>
 
 namespace mcxx {

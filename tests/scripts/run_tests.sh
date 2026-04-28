@@ -2,6 +2,7 @@
 
 set -e
 
-sudo ./setup.sh
+# trap './teardown.sh' EXIT
+
+source ./setup.sh
 ./../../build/tests
-sudo -E ./teardown.sh

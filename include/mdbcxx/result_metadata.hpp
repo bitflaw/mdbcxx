@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include <string>
 #include <vector>
 

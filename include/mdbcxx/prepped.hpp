@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <mysql/mysql.h>
+#include <mysql.h>
 
 namespace mcxx {
 inline auto stmt_dtor = [](MYSQL_STMT* stmt)

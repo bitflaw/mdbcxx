@@ -8,12 +8,14 @@ TEST_CASE("CONNECTION TESTS")
   std::string user = getenv("TDB_USR");
   std::string pass = getenv("TDB_PASS");
   std::string port = getenv("TDB_PORT");
+  const char* host = getenv("TDB_HOST");
 
   mcxx::Properties props {};
   props.user = user;
   props.passwd = pass;
   props.db_name = db;
   props.port = (short) std::stoi(port);
+  props.host = host ? host : "127.0.0.1";
 
   REQUIRE_NOTHROW(mcxx::Connection {props});
   REQUIRE_THROWS(mcxx::Connection {user, pass, db});

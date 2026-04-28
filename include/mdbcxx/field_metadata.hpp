@@ -1,5 +1,5 @@
 #pragma once
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include <cstdint>
 #include <string>
 

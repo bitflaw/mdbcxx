@@ -27,7 +27,7 @@
     {
       packages.${system}.default = pkgs.stdenv.mkDerivation {
         pname = "mdbcxx";
-        version = "0.0.0";
+        version = "0.1.0";
         src = ./.;
 
         nativeBuildInputs = with pkgs; [

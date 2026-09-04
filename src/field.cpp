@@ -48,9 +48,9 @@ Field::Field(MYSQL_FIELD* field, char* raw, ulong len)
 }
 
 
-template <typename T>
 // WARN: probably should use reinterpret_cast since this can fail for types not
 // convertible to and fro string.
+template <typename T>
 T Field::as () const { return static_cast<T>(std::get<std::string>(value)); }
 
 using BLOB_T = std::vector<std::byte>;
@@ -91,6 +91,7 @@ unsigned long Field::as<unsigned long> () const
   return std::stoul(std::get<std::string>(value));
 }
 
+// WARN: might be wrong
 template <>
 bool Field::as<bool> () const { return (!std::get<std::string>(value).empty() ? true:false); }
 
@@ -107,7 +108,7 @@ template <> chrono_timestamp Field::as<chrono_timestamp> () const
 
   if (auto dot = s.find('.'); dot != std::string_view::npos)
   {
-    micro = std::stoi(std::string(s.substr(dot + 1)));
+    micro = std::stoi(s.substr(dot + 1));
   }
 
   std::tm tm{};

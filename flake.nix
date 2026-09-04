@@ -1,7 +1,7 @@
 {
   description = "A C++ wrapper for the MariaDB C Connector";
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-25.11";
+    nixpkgs.url = "nixpkgs/nixos-26.05";
   };
   outputs =
     { self, nixpkgs }:
@@ -42,15 +42,12 @@
           pkg-config
           cmake
           clang-tools
-          gdb
+          gf
         ];
         buildInputs = with pkgs; [
           catch2_3
           mariadb-connector-c
         ];
-        shellHook = ''
-          export SHELL="${pkgs.bashInteractive}/bin/bash"
-        '';
       };
     };
 }

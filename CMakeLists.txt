@@ -74,11 +74,11 @@ target_include_directories(mdbcxx_static
   $<INSTALL_INTERFACE:include>
 )
 
-#configure_file(
-#  ${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx/version.hpp.in
-#  ${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx/version.hpp
-#  @ONLY
-#)
+configure_file(
+ ${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx/version.hpp.in
+ ${CMAKE_CURRENT_SOURCE_DIR}/include/mdbcxx/version.hpp
+ @ONLY
+)
 
 
 #-------------------------INSTALL TARGETS----------------------------#

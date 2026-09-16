@@ -1,7 +1,9 @@
-#include "../include/mdbcxx/field.hpp"
 #include <stdexcept>
 #include <chrono>
 #include <cstddef>
+#include <variant>
+#include <field.hpp>
+#include <dyncol.hpp>
 
 
 namespace mcxx
@@ -35,16 +37,8 @@ Field::Field(MYSQL_FIELD* field, char* raw, ulong len)
 {
   metadata = FieldMetadata {field};
 
-  if (!(field->flags & NOT_NULL_FLAG) ||
-    field->type == MYSQL_TYPE_NULL
-  )
-  {
-    value = std::monostate {};
-    return;
-  }
-
-  if (raw != NULL) value = std::string {raw, len};
-  else value = std::string {};
+  if (raw == nullptr) value = std::monostate {};
+  else                value = std::string {raw, len};
 }
 
 
@@ -57,8 +51,8 @@ using BLOB_T = std::vector<std::byte>;
 template <> BLOB_T Field::as<BLOB_T> () const
 {
   std::string v = std::get<std::string>(value);
-  const std::byte* raw_bytestream = reinterpret_cast<const std::byte*>(v.data());
-  return std::vector<std::byte> {raw_bytestream, raw_bytestream+v.size()};
+  const std::byte* bytestream = reinterpret_cast<const std::byte*>(v.data());
+  return std::vector<std::byte> {bytestream, bytestream+v.size()};
 }
 
 template <>
@@ -97,30 +91,45 @@ bool Field::as<bool> () const { return (!std::get<std::string>(value).empty() ? 
 
 template <> std::string Field::as<std::string> () const { return std::get<std::string>(value); }
 
-using chrono_timestamp = std::chrono::system_clock::time_point;
-template <> chrono_timestamp Field::as<chrono_timestamp> () const
+template <>
+DynamicColumn Field::as<DynamicColumn> () const
 {
-  int y, M, d, h, m, sec;
-  int micro = 0;
-  std::string s = std::get<std::string>(value);
+  std::string v = std::get<std::string>(value);
+  return DynamicColumn {
+    DYNAMIC_COLUMN {
+      .str = v.data(),
+      .length = v.length(),
+      .max_length = v.max_size(),
+      .alloc_increment = 0
+    }
+  };
+}
 
-  std::sscanf(s.data(), "%d-%d-%d %d:%d:%d", &y, &M, &d, &h, &m, &sec);
+using chrono_timestamp = std::chrono::system_clock::time_point;
+template <>
+chrono_timestamp Field::as<chrono_timestamp>() const
+{
+    const std::string& s = std::get<std::string>(value);
+    std::istringstream ss{s};
 
-  if (auto dot = s.find('.'); dot != std::string_view::npos)
-  {
-    micro = std::stoi(s.substr(dot + 1));
-  }
+    std::chrono::sys_time<std::chrono::microseconds> tp {};
+    if (ss >> std::chrono::parse("%F %T", tp) ||
+        (ss.clear(), ss.str(s), ss >> std::chrono::parse("%FT%T", tp))
+        )
+    {
+        return std::chrono::time_point_cast<chrono_timestamp::duration>(tp);
+    }
 
-  std::tm tm{};
-  tm.tm_year = y - 1900;
-  tm.tm_mon  = M - 1;
-  tm.tm_mday = d;
-  tm.tm_hour = h;
-  tm.tm_min  = m;
-  tm.tm_sec  = sec;
+    ss.clear();
+    ss.str(s);
+    std::chrono::year_month_day date {};
+    if (ss >> std::chrono::parse("%F", date))
+    {
+        auto days = std::chrono::sys_days{date};
+        return std::chrono::time_point_cast<chrono_timestamp::duration>(days);
+    }
 
-  auto secs = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-  return chrono_timestamp {secs + std::chrono::microseconds(micro)};
+    throw std::runtime_error("Failed to parse timestamp string: " + s);
 }
 
 bool Field::is_null () { return std::holds_alternative<std::monostate>(value); }

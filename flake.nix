@@ -18,6 +18,9 @@
           sed -i 's/MYSQL_TIME tm;/MYSQL_TIME tm = {0};/' libmariadb/mariadb_rpl.c
         '';
 
+        cmakeFlags = [
+          "-DLIBMARIADB=ON"
+        ];
         nativeBuildInputs = [ pkgs.cmake ];
         buildInputs = [
           pkgs.openssl

@@ -40,10 +40,11 @@ private:
 };
 
 template <typename TUPLE, std::size_t... I>
-TUPLE Row::build_tuple (std::index_sequence<I...> seq)
+TUPLE Row::build_tuple (std::index_sequence<I...>)
 {
   return TUPLE {
-    ([](Field& field){
+    ([](Field& field)
+     {
       using TargetT = std::tuple_element_t<I, TUPLE>;
       if(field.is_null())
       {

@@ -30,7 +30,7 @@ public:
   ~Result() = default;
 private:
   std::vector<Row> result_set {};
-  ResultMetadata rmetadata {};
+  ResultMetadata metadata {};
 };
 
 };

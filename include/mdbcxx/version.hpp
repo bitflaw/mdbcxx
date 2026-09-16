@@ -1,0 +1,6 @@
+#pragma once
+
+#define MDBCXX_VERSION_MAJOR 0
+#define MDBCXX_VERSION_MINOR 1
+#define MDBCXX_VERSION_PATCH 0
+#define MDBCXX_VERSION_STRING "0.1.0"

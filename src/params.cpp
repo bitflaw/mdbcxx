@@ -17,15 +17,17 @@ void params::append(float val) { param_vec.emplace_back(val); }
 void params::append(double val) { param_vec.emplace_back(val); }
 void params::append(std::vector<std::byte>& val) { param_vec.emplace_back(val); }
 void params::append(sqlstringT val) { param_vec.emplace_back(val); }
+void params::append(DynamicColumn val) { param_vec.emplace_back(val); }
 void params::append(params& val)
 {
-  for (param_T v: val.raw()) param_vec.emplace_back(v);
+  param_vec.insert(param_vec.end(), val.raw().begin(), val.raw().end());
 }
 
 void params::append(std::vector<param_T>& val)
 {
-  for (param_T & v: val) param_vec.emplace_back(v);
+  param_vec.insert(param_vec.end(), val.begin(), val.end());
 }
+
 std::vector<param_T>::iterator params::begin ()                { return param_vec.begin(); }
 std::vector<param_T>::const_iterator params::cbegin ()         { return param_vec.cbegin(); }
 std::vector<param_T>::reverse_iterator params::rbegin ()       { return param_vec.rbegin(); }
@@ -96,6 +98,17 @@ MYSQL_BIND set_param(param_T& p)
       else if (blob_size <= 2e24) {param.buffer_type = MYSQL_TYPE_MEDIUM_BLOB;}
       else if (blob_size <= 2e32) {param.buffer_type = MYSQL_TYPE_LONG_BLOB;}
       else { throw std::length_error("[ERROR: set_param()] Cannot set blob larger than 2e32 bits");}
+    } else if constexpr(std::is_same_v<arg_T, DynamicColumn>)
+    {
+      std::vector<std::byte> blob = arg.serialize();
+      uint64_t blob_size = blob.size();
+      param.buffer = blob.data();
+      param.buffer_length = blob_size;
+      if (blob_size <= 2e8) {param.buffer_type = MYSQL_TYPE_TINY_BLOB;}
+      else if (blob_size <= 2e16) {param.buffer_type = MYSQL_TYPE_BLOB;}
+      else if (blob_size <= 2e24) {param.buffer_type = MYSQL_TYPE_MEDIUM_BLOB;}
+      else if (blob_size <= 2e32) {param.buffer_type = MYSQL_TYPE_LONG_BLOB;}
+      else { throw std::length_error("[ERROR: set_param()] Cannot set dynamic_column larger than 2e32 bits");}
     }
     else { throw std::runtime_error("Type not found"); }
   },p);

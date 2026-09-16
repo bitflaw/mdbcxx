@@ -30,6 +30,7 @@ if(BUILD_TESTS)
     tests/connection.cpp
     tests/params.cpp
     tests/transaction.cpp
+    tests/dyncol.cpp
   )
 
   add_executable(tests ${TEST_SRCS})
@@ -49,6 +50,7 @@ set(SOURCES
   src/connection.cpp
   src/transaction.cpp
   src/params.cpp
+  src/dyncol.cpp
 )
 
 add_library(mdbcxx_shared SHARED ${SOURCES})

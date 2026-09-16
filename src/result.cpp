@@ -6,19 +6,19 @@ namespace mcxx
 {
 Result::Result(const Result& result):
   result_set(result.result_set),
-  rmetadata(result.rmetadata)
+  metadata(result.metadata)
 {}
 
 Result::Result(Result&& result):
   result_set(std::move(result.result_set)),
-  rmetadata(std::move(result.rmetadata))
+  metadata(std::move(result.metadata))
 {}
 
 Result::Result (MYSQL_RES* res)
 {
   if (!res) return;
   ResultMetadata rmeta {res};
-  rmetadata = std::move(rmeta);
+  metadata = std::move(rmeta);
   std::size_t res_size {mysql_num_rows(res)};
   result_set.reserve(res_size);
   std::size_t ncol {mysql_num_fields(res)};

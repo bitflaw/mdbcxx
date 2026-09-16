@@ -1,4 +1,5 @@
 #pragma once
+#include "dyncol.hpp"
 #include <cstddef>
 #include <string>
 #include <sys/types.h>
@@ -39,10 +40,12 @@ inline void handle_strTs (MYSQL_BIND* param, sqlstringT& value)
 }
 
 using param_T = std::variant<
+  std::nullptr_t, bool,
   uint8_t, int8_t, uint16_t, int16_t,
-  uint32_t,int32_t, uint64_t, int64_t,
-  float, double, std::vector<std::byte>,
-  sqlstringT, std::nullptr_t, bool
+  uint32_t, int32_t, uint64_t, int64_t,
+  float, double,
+  std::vector<std::byte>, sqlstringT,
+  DynamicColumn
 >;
 
 
@@ -77,19 +80,20 @@ public:
   void append(std::vector<std::byte>&);
   void append(sqlstringT);
   void append(std::vector<param_T>&);
+  void append(DynamicColumn val);
   void append(params&);
 
   template<typename... Args>
   requires (sizeof...(Args) > 0)
   void append_multi(Args&&... args) { (append(args), ...); }
 
-  std::vector<param_T>::iterator begin ();
-  std::vector<param_T>::const_iterator cbegin ();
-  std::vector<param_T>::reverse_iterator rbegin ();
+  std::vector<param_T>::iterator               begin ();
+  std::vector<param_T>::iterator               end ();
+  std::vector<param_T>::const_iterator         cbegin ();
+  std::vector<param_T>::const_iterator         cend ();
+  std::vector<param_T>::reverse_iterator       rbegin ();
+  std::vector<param_T>::reverse_iterator       rend ();
   std::vector<param_T>::const_reverse_iterator crbegin();
-  std::vector<param_T>::iterator end ();
-  std::vector<param_T>::const_iterator cend ();
-  std::vector<param_T>::reverse_iterator rend ();
   std::vector<param_T>::const_reverse_iterator crend ();
 
   std::size_t size() const;
